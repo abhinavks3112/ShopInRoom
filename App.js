@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
+
+import productsReducer from './store/reducers/productsReducer';
+
+const rootReducer = combineReducers({
+  products: productsReducer
+});
+
+const store = createStore(rootReducer);
 
 // Load custom fonts to be used anywhere in this app
 const fetchFonts = () => {
@@ -27,9 +37,11 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <Text>Open up App.js to start working on your app!</Text>
+      </View>
+    </Provider>
   );
 }
 
