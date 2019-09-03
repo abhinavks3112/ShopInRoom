@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 
-const BodyText = (props) => {
+const TitleText = (props) => {
     const { children, style } = props;
     return <Text style={{ ...styles.text, ...style }}>{children}</Text>;
 };
@@ -9,8 +9,8 @@ const BodyText = (props) => {
 const styles = StyleSheet.create({
     text: {
         fontFamily: 'roboto',
-        fontSize: 18
+        fontSize: 22
     }
 });
 
-export default BodyText;
+export default TitleText;
