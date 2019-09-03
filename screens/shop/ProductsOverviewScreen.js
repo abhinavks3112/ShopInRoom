@@ -1,25 +1,33 @@
 import React from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     FlatList
 } from 'react-native';
 import { useSelector } from 'react-redux';
 
-const renderProductCard = (itemData) => (
-        <View style={styles.screen}>
-            <Text key={itemData.item.id}>{itemData.item.title}</Text>
-        </View>
-    );
+import ProductCard from '../../components/ProductCard';
 
-const ProductsOverview = (props) => {
+const renderProductCard = (itemData) => (
+        <ProductCard
+        title={itemData.item.title}
+        price={itemData.item.price}
+        imageUrl={itemData.item.imageUrl}
+        onViewDetails={() => {}}
+        onAddToCart={() => {}}
+        />
+);
+
+const ProductsOverview = () => {
     const productsList = useSelector((state) => state.products.availableProducts);
     return (
-        <FlatList
-        data={productsList}
-        renderItem={renderProductCard}
-        />
+        <View style={styles.screen}>
+            <FlatList
+            data={productsList}
+            renderItem={renderProductCard}
+            keyExtractor={(item) => item.id}
+            />
+        </View>
     );
 };
 
@@ -32,6 +40,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    productCard: {
+        width: '100%'
     }
 });
 
