@@ -6,6 +6,7 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
 import productsReducer from './store/reducers/productsReducer';
+import ShopNaviagtor from './navigation/ShopNavigator';
 
 const rootReducer = combineReducers({
   products: productsReducer
@@ -38,9 +39,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
+      <ShopNaviagtor />
     </Provider>
   );
 }
