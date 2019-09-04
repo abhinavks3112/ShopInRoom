@@ -8,23 +8,28 @@ import { useSelector } from 'react-redux';
 
 import ProductCard from '../../components/ProductCard';
 
-const renderProductCard = (itemData) => (
-        <ProductCard
-        title={itemData.item.title}
-        price={itemData.item.price}
-        imageUrl={itemData.item.imageUrl}
-        onViewDetails={() => {}}
-        onAddToCart={() => {}}
-        />
-);
-
-const ProductsOverview = () => {
+const ProductsOverview = (props) => {
+    const { navigation } = props;
     const productsList = useSelector((state) => state.products.availableProducts);
     return (
         <View style={styles.screen}>
             <FlatList
             data={productsList}
-            renderItem={renderProductCard}
+            renderItem={(itemData) => (
+                        <ProductCard
+                        id={itemData.item.id}
+                        title={itemData.item.title}
+                        price={itemData.item.price}
+                        imageUrl={itemData.item.imageUrl}
+                        onViewDetails={() => navigation.navigate(
+                            'ProductsDetails', {
+                                productId: itemData.item.id,
+                                productTitle: itemData.item.title
+                            }
+                        )}
+                        onAddToCart={() => {}}
+                        />
+            )}
             keyExtractor={(item) => item.id}
             />
         </View>
