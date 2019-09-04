@@ -1,9 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Image,
+    ScrollView,
+    Dimensions,
+    Button
+} from 'react-native';
 import { useSelector } from 'react-redux';
 
 import BodyText from '../../components/BodyText';
 import TitleText from '../../components/TitleText';
+import Colors from '../../constants/Colors';
 
 const ProductDetailsScreen = (props) => {
     const { navigation } = props;
@@ -12,22 +20,28 @@ const ProductDetailsScreen = (props) => {
         (state) => state.products.availableProducts.find((product) => product.id === prodId)
     );
     return (
-        <View style={styles.screen}>
-            <ScrollView>
-                <View style={styles.imageContainer}>
-                    <Image
-                    source={{ uri: selectedProduct.imageUrl }}
-                    style={styles.image}
-                    />
-                </View>
-                <View>
-                    <TitleText style={styles.subHeading}>Price:</TitleText>
-                    <BodyText style={styles.price}>{selectedProduct.price.toFixed(2)}</BodyText>
-                    <TitleText style={styles.subHeading}>Description:</TitleText>
-                    <BodyText style={styles.description}>{selectedProduct.description}</BodyText>
-                </View>
-            </ScrollView>
-        </View>
+        <ScrollView>
+            <View style={styles.imageContainer}>
+                <Image
+                source={{ uri: selectedProduct.imageUrl }}
+                style={styles.image}
+                />
+            </View>
+            <View style={styles.buttonContainer}>
+                <Button
+                title="Add To Cart"
+                color={Colors.Primary}
+                onPress={() => {}}
+                />
+            </View>
+            <View>
+                <TitleText style={styles.price}>
+                    {selectedProduct.price.toFixed(2)}
+                    $
+                </TitleText>
+                <BodyText style={styles.description}>{selectedProduct.description}</BodyText>
+            </View>
+        </ScrollView>
     );
 };
 
@@ -39,33 +53,31 @@ ProductDetailsScreen.navigationOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 10
-    },
     imageContainer: {
         overflow: 'hidden',
-        height: Dimensions.get('window').height > 300 ? 400 : 300,
-        width: Dimensions.get('window').width > 300 ? Dimensions.get('window').width : 300
+        height: Dimensions.get('window').height > 250 ? 300 : 250,
+        width: Dimensions.get('window').width > 300 ? Dimensions.get('window').width : 320
     },
     image: {
         height: '100%',
         width: '100%'
     },
-    subHeading: {
-        fontSize: 18,
-        marginVertical: 5
+    buttonContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10
     },
     price: {
         color: '#888',
-        fontSize: 16,
-        padding: 5
+        fontSize: 18,
+        padding: 5,
+        textAlign: 'center'
     },
     description: {
         fontSize: 16,
-        padding: 5
+        padding: 5,
+        textAlign: 'center',
+        marginHorizontal: 20
     }
 });
 
