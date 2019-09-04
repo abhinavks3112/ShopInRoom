@@ -4,17 +4,22 @@ import { Provider } from 'react-redux';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { useScreens } from 'react-native-screens';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import productsReducer from './store/reducers/productsReducer';
+import cartReducer from './store/reducers/cartReducer';
 import ShopNaviagtor from './navigation/ShopNavigator';
 
 useScreens(true);
 
 const rootReducer = combineReducers({
-  products: productsReducer
+  products: productsReducer,
+  carts: cartReducer
 });
 
-const store = createStore(rootReducer);
+/* composeWithDevTools should be removed when deploying the app since
+this is only useful for debugging with Redux Native Debugger Tool */
+const store = createStore(rootReducer, composeWithDevTools());
 
 // Load custom fonts to be used anywhere in this app
 const fetchFonts = () => Font.loadAsync({
