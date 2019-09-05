@@ -5,7 +5,9 @@ import {
     FlatList
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
+import HeaderButton from '../../components/HeaderButton';
 import ProductCard from '../../components/ProductCard';
 import { addToCart } from '../../store/actions/cartAction';
 
@@ -39,9 +41,18 @@ const ProductsOverview = (props) => {
     );
 };
 
-ProductsOverview.navigationOptions = {
-    headerTitle: 'Products'
-};
+ProductsOverview.navigationOptions = (navData) => ({
+        headerTitle: 'Products',
+        headerRight: (
+        <HeaderButtons HeaderButtonComponent={HeaderButton}>
+            <Item
+            title="Cart"
+            iconName="shopping-cart"
+            onPress={() => navData.navigation.navigate('Cart')}
+            />
+        </HeaderButtons>
+        )
+});
 
 const styles = StyleSheet.create({
     screen: {
