@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import Colors from '../../constants/Colors';
 import TitleText from '../../components/TitleText';
 import BodyText from '../../components/BodyText';
-import CartItem from '../../models/cart-item';
+import CartItem from '../../components/CartItems';
 
 const CartScreen = () => {
     const itemsInCart = useSelector((state) => {
@@ -25,7 +25,9 @@ const CartScreen = () => {
         }
         return transformedCartItems;
     });
+
     const totalAmount = useSelector((state) => state.carts.totalAmount);
+
     return (
         <View style={styles.screen}>
             <View style={styles.summary}>
@@ -44,25 +46,25 @@ const CartScreen = () => {
                 disabled={itemsInCart.length === 0} // Disable button if no item added
                 />
             </View>
-            <View>
-                <BodyText>
-                    Cart Items List
-                </BodyText>
-                {/* <FlatList
+            <FlatList
                 data={itemsInCart}
-                renderItem={() => {}}
-                keyExtractor={(item) => item.id}
-                /> */}
-            </View>
+                renderItem={(itemData) => (
+                    <CartItem
+                    title={itemData.item.productTitle}
+                    quantity={itemData.item.quantity}
+                    sum={itemData.item.sum}
+                    onDelete={() => {}}
+                    />
+                )}
+                keyExtractor={(item) => item.productId}
+            />
         </View>
     );
 };
 
-CartScreen.navigationOptions = () => {
-    return ({
+CartScreen.navigationOptions = () => ({
         headerTitle: 'Cart'
-    });
-};
+});
 
 const styles = StyleSheet.create({
     screen: {

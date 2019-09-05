@@ -8,9 +8,8 @@ import TitleText from './TitleText';
 import Colors from '../constants/Colors';
 
 const ProductCard = (props) => {
-    const { navigation } = props;
     const {
-        id, title, price, imageUrl, onViewDetails, onAddToCart
+        title, price, imageUrl, onViewDetails, onAddToCart
     } = props;
     return (
         <View style={styles.card}>
@@ -57,14 +56,19 @@ const ProductCard = (props) => {
 
 const styles = StyleSheet.create({
     card: {
+        // layout
         height: Dimensions.get('window').height > 300 ? Dimensions.get('window').height * 0.4 : 300,
         width: Dimensions.get('window').width > 300 ? Dimensions.get('window').width * 0.9 : 300,
         minWidth: 250,
         margin: 10,
         paddingBottom: 10,
+
+        // border
         borderColor: 'lightgrey',
         borderWidth: 1,
         borderRadius: 10,
+
+        // shadow
         elevation: 2,
         shadowColor: 'black',
         shadowOffset: {
