@@ -24,6 +24,7 @@ const store = createStore(rootReducer, composeWithDevTools());
 // Load custom fonts to be used anywhere in this app
 const fetchFonts = () => Font.loadAsync({
     roboto: require('./assets/fonts/Roboto-Regular.ttf'),
+    'roboto-bold': require('./assets/fonts/Roboto-Bold.ttf'),
     'open-sans': require('./assets/fonts/OpenSans-Regular.ttf')
 });
 
