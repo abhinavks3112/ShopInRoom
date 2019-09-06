@@ -2,12 +2,13 @@ import React from 'react';
 import {
  View, StyleSheet, Button, FlatList
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
 import TitleText from '../../components/TitleText';
 import BodyText from '../../components/BodyText';
 import CartItem from '../../components/CartItems';
+import { removeFromCart } from '../../store/actions/cartAction';
 
 const CartScreen = () => {
     const itemsInCart = useSelector((state) => {
@@ -26,7 +27,27 @@ const CartScreen = () => {
         return transformedCartItems;
     });
 
+    const dispatch = useDispatch();
     const totalAmount = useSelector((state) => state.carts.totalAmount);
+
+    const renderItemList = () => {
+        if (itemsInCart.length !== 0) {
+            return (
+                <FlatList
+                    data={itemsInCart}
+                    renderItem={(itemData) => (
+                        <CartItem
+                        title={itemData.item.productTitle}
+                        quantity={itemData.item.quantity}
+                        sum={itemData.item.sum}
+                        onDelete={() => dispatch(removeFromCart(itemData.item))}
+                        />
+                    )}
+                    keyExtractor={(item) => item.productId}
+                />
+            );
+        }
+    };
 
     return (
         <View style={styles.screen}>
@@ -46,18 +67,7 @@ const CartScreen = () => {
                 disabled={itemsInCart.length === 0} // Disable button if no item added
                 />
             </View>
-            <FlatList
-                data={itemsInCart}
-                renderItem={(itemData) => (
-                    <CartItem
-                    title={itemData.item.productTitle}
-                    quantity={itemData.item.quantity}
-                    sum={itemData.item.sum}
-                    onDelete={() => {}}
-                    />
-                )}
-                keyExtractor={(item) => item.productId}
-            />
+            {renderItemList()}
         </View>
     );
 };
@@ -100,6 +110,15 @@ const styles = StyleSheet.create({
     amount: {
         fontSize: 20,
         color: Colors.Primary
+    },
+    noItemsInCart: {
+        marginVertical: 80,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    noItemsInCarText: {
+        color: Colors.Primary,
+        textAlign: 'center'
     }
 });
 

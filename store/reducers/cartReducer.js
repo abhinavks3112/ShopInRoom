@@ -1,4 +1,4 @@
-import { ADD_TO_CART } from '../actions/types';
+import { ADD_TO_CART, REMOVE_FROM_CART } from '../actions/types';
 import CartItem from '../../models/cart-item';
 
 const INITIAL_STATE = {
@@ -38,6 +38,33 @@ export default (state = INITIAL_STATE, action) => {
                 totalAmount: state.totalAmount + prodPrice
             };
         }
+
+        case REMOVE_FROM_CART: {
+            /* Copying everthing from action.payload except the property name
+            that is specified in first argument(should be same name inside object
+            that we do not want to copy), into a second argument */
+            const { productId, ...prodDetails } = action.payload;
+
+            if (action.payload.quantity > 1) {
+                prodDetails.quantity -= 1;
+                prodDetails.sum -= prodDetails.productPrice;
+                return {
+                    ...state,
+                    items: { ...state.items, [productId]: prodDetails },
+                    totalAmount: state.totalAmount - prodDetails.productPrice
+                };
+            }
+
+            /* If item quantity is zero, delete it from the list of items in cart */
+            const itemsLeft = { ...state.items };
+            delete itemsLeft[productId];
+            return {
+                ...state,
+                items: itemsLeft,
+                totalAmount: state.totalAmount - prodDetails.productPrice
+            };
+        }
+
         default: return state;
     }
 };

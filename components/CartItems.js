@@ -24,7 +24,7 @@ const CartItem = (props) => {
                 </View>
                 <View style={styles.content}>
                     <BodyText style={styles.sum}>
-                    {sum}
+                    {sum.toFixed(2)}
                     $
                     </BodyText>
                     <TouchableNativeFeedback onPress={onDelete}>
