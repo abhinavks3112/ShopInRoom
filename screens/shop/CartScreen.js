@@ -4,11 +4,15 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
+// components
 import Colors from '../../constants/Colors';
 import TitleText from '../../components/TitleText';
 import BodyText from '../../components/BodyText';
 import CartItem from '../../components/CartItems';
+
+// actions
 import { removeFromCart } from '../../store/actions/cartAction';
+import { addOrder } from '../../store/actions/ordersAction';
 
 const CartScreen = () => {
     const itemsInCart = useSelector((state) => {
@@ -62,7 +66,7 @@ const CartScreen = () => {
                 </BodyText>
                 <Button
                 title="Order Now"
-                onPress={() => {}}
+                onPress={() => dispatch(addOrder(itemsInCart, totalAmount))}
                 color={Colors.Accent}
                 disabled={itemsInCart.length === 0} // Disable button if no item added
                 />

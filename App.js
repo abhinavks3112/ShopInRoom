@@ -8,13 +8,15 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import productsReducer from './store/reducers/productsReducer';
 import cartReducer from './store/reducers/cartReducer';
+import ordersReducer from './store/reducers/ordersReducer';
 import ShopNaviagtor from './navigation/ShopNavigator';
 
 useScreens(true);
 
 const rootReducer = combineReducers({
   products: productsReducer,
-  carts: cartReducer
+  carts: cartReducer,
+  orders: ordersReducer
 });
 
 /* composeWithDevTools should be removed when deploying the app since
