@@ -9,7 +9,7 @@ const BodyText = (props) => {
 const styles = StyleSheet.create({
     text: {
         fontFamily: 'roboto',
-        fontSize: 18
+        fontSize: 16
     }
 });
 
