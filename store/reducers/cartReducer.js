@@ -1,4 +1,4 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../actions/types';
+import { ADD_TO_CART, REMOVE_FROM_CART, ADD_ORDER } from '../actions/types';
 import CartItem from '../../models/cart-item';
 
 const INITIAL_STATE = {
@@ -63,6 +63,11 @@ export default (state = INITIAL_STATE, action) => {
                 items: itemsLeft,
                 totalAmount: state.totalAmount - prodDetails.productPrice
             };
+        }
+        /* Since same action is received in every reducer, using that we will clear the cart
+        in cart reducer, and add the order in ordersReducer, as soon as an order is made */
+        case ADD_ORDER: {
+            return INITIAL_STATE;
         }
 
         default: return state;
