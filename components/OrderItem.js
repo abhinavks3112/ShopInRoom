@@ -50,9 +50,9 @@ const OrderItem = (props) => {
             </View>
             <View style={styles.buttonContainer}>
                 <Button
-                title="Show Details"
+                title={showDetails ? 'Hide Details' : 'Show Details'}
                 color={Colors.Primary}
-                onPress={() => setShowDetails(!showDetails)}
+                onPress={() => setShowDetails((prevState) => !prevState)}
                 />
             </View>
             {renderItemList()}
