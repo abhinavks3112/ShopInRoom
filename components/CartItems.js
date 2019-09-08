@@ -10,7 +10,8 @@ const CartItem = (props) => {
     title,
     quantity,
     sum,
-    onDelete
+    onDelete,
+    deletable
     } = props;
     return (
         <View style={styles.item}>
@@ -27,6 +28,9 @@ const CartItem = (props) => {
                     {sum.toFixed(2)}
                     $
                     </BodyText>
+                    {/* Delete item should be shown conditionally, eg. should be
+                    shown in cart but not in order details screen */}
+                    {deletable && (
                     <TouchableNativeFeedback onPress={onDelete}>
                         <MaterialIcons
                         name="delete"
@@ -34,6 +38,7 @@ const CartItem = (props) => {
                         color="red"
                         />
                     </TouchableNativeFeedback>
+                    )}
                 </View>
             </View>
         </View>
