@@ -12,7 +12,7 @@ export default (state = INITIAL_STATE, action) => {
                 new Date().toString(),
                 action.payload.items,
                 action.payload.amount,
-                new Date().getDate()
+                new Date().toDateString()
             );
             return {
                 ...state,

@@ -8,7 +8,7 @@ const TitleText = (props) => {
 
 const styles = StyleSheet.create({
     text: {
-        fontFamily: 'roboto',
+        fontFamily: 'roboto-bold',
         fontSize: 18
     }
 });
