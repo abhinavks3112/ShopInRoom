@@ -8,6 +8,8 @@ import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import ProductsDetailsScreen from '../screens/shop/ProductDetailsScreen';
 import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
+import UserProductsScreen from '../screens/user/UserProductsScreen';
+
 import Colors from '../constants/Colors';
 
 const defaultHeaderStyle = {
@@ -56,9 +58,27 @@ const OrdersNavigator = createStackNavigator({
     defaultNavigationOptions: defaultHeaderStyle
 });
 
+const AdminNavigator = createStackNavigator({
+    UserProducts: UserProductsScreen
+}, {
+    navigationOptions: {
+        /* Applies an icon before the name entries in drawer menu */
+        drawerIcon: (drawerConfig) => (
+        /* drawerConfig.tintColor applies color according to whether it is selected or not */
+        <MaterialIcons
+        name="create"
+        size={18}
+        color={drawerConfig.tintColor}
+        />
+        )
+    },
+    defaultNavigationOptions: defaultHeaderStyle
+});
+
 const ShopNavigator = createDrawerNavigator({
     Products: ProductsNaviagtor,
-    Orders: OrdersNavigator
+    Orders: OrdersNavigator,
+    Admin: AdminNavigator
 }, {
     contentOptions: {
         activeTintColor: Colors.Primary
