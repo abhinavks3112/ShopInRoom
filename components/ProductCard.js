@@ -1,21 +1,20 @@
 import React from 'react';
 import {
- View, Image, StyleSheet, Button, Dimensions, TouchableNativeFeedback
+ View, Image, StyleSheet, Dimensions, TouchableNativeFeedback
 } from 'react-native';
 
 import BodyText from './BodyText';
 import TitleText from './TitleText';
-import Colors from '../constants/Colors';
 
 const ProductCard = (props) => {
     const {
-        title, price, imageUrl, onViewDetails, onAddToCart
+        title, price, imageUrl, onSelect, children
     } = props;
     return (
         <View style={styles.card}>
             <View style={styles.touchable}>
                 <TouchableNativeFeedback
-                onPress={onViewDetails}
+                onPress={onSelect}
                 >
                     <View>
                         <View style={styles.imageContainer}>
@@ -33,20 +32,7 @@ const ProductCard = (props) => {
                                 $
                             </BodyText>
                         </View>
-                        <View style={styles.actions}>
-                            <Button
-                            title="View Details"
-                            onPress={onViewDetails}
-                            color={Colors.Primary}
-                            style={styles.button}
-                            />
-                            <Button
-                            title="Add To Cart"
-                            onPress={onAddToCart}
-                            color={Colors.Accent}
-                            style={styles.button}
-                            />
-                        </View>
+                        {children}
                     </View>
                 </TouchableNativeFeedback>
             </View>
@@ -103,18 +89,6 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 14,
         color: '#888'
-    },
-    actions: {
-        height: '25%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        marginVertical: 2
-    },
-    button: {
-        borderRadius: 10
     }
 });
 
