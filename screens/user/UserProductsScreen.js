@@ -5,15 +5,28 @@ import {
  StyleSheet,
  FlatList
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import Colors from '../../constants/Colors';
 import ProductCard from '../../components/ProductCard';
 import CustomHeaderButton from '../../components/HeaderButton';
 
-const UserProductScreen = () => {
+import { deleteProduct } from '../../store/actions/productsAction';
+
+const UserProductScreen = (props) => {
+    const { navigation } = props;
     const userProducts = useSelector((state) => state.products.userProducts);
+    const dispatch = useDispatch();
+
+    const editProductHandler = (item) => (
+        navigation.navigate({
+            routeName: 'EditProducts',
+            params: {
+                id: item.id
+            }
+        })
+    );
 
     return (
         <View style={styles.screen}>
@@ -26,18 +39,18 @@ const UserProductScreen = () => {
                     title={itemData.item.title}
                     price={itemData.item.price}
                     imageUrl={itemData.item.imageUrl}
-                    onSelect={() => {}}
+                    onSelect={() => editProductHandler(itemData.item)}
                     >
                         <View style={styles.actions}>
                                 <Button
                                 title="Edit"
-                                onPress={() => {}}
+                                onPress={() => editProductHandler(itemData.item)}
                                 color={Colors.Primary}
                                 style={styles.button}
                                 />
                                 <Button
                                 title="Delete"
-                                onPress={() => {}}
+                                onPress={() => { dispatch(deleteProduct(itemData.item.id)); }}
                                 color={Colors.Accent}
                                 style={styles.button}
                                 />
@@ -59,7 +72,17 @@ UserProductScreen.navigationOptions = (navData) => ({
             onPress={navData.navigation.toggleDrawer}
             />
         </HeaderButtons>
-        )
+        ),
+        /* For adding new products, no need for any id */
+        headerRight: (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                title="Add"
+                iconName="add-box"
+                onPress={() => navData.navigation.navigate('EditProducts')}
+                />
+            </HeaderButtons>
+            )
 });
 
 const styles = StyleSheet.create({

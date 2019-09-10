@@ -9,6 +9,7 @@ import ProductsDetailsScreen from '../screens/shop/ProductDetailsScreen';
 import CartScreen from '../screens/shop/CartScreen';
 import OrdersScreen from '../screens/shop/OrdersScreen';
 import UserProductsScreen from '../screens/user/UserProductsScreen';
+import EditProductsScreen from '../screens/user/EditProductsScreen';
 
 import Colors from '../constants/Colors';
 
@@ -59,7 +60,8 @@ const OrdersNavigator = createStackNavigator({
 });
 
 const AdminNavigator = createStackNavigator({
-    UserProducts: UserProductsScreen
+    UserProducts: UserProductsScreen,
+    EditProducts: EditProductsScreen
 }, {
     navigationOptions: {
         /* Applies an icon before the name entries in drawer menu */
