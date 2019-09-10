@@ -62,7 +62,8 @@ const CartScreen = () => {
                     {' '}
                     <TitleText style={styles.amount}>
                     $
-                    {totalAmount.toFixed(2)}
+                    {/* To handle negative number case scenario, rounding the number */}
+                    {Math.round(totalAmount.toFixed(2) * 100) / 100}
                     </TitleText>
                 </BodyText>
                 <Button
