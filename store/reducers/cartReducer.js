@@ -1,4 +1,9 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, ADD_ORDER } from '../actions/types';
+import {
+ ADD_TO_CART,
+ REMOVE_FROM_CART,
+ ADD_ORDER,
+ DELETE_PRODUCT
+} from '../actions/types';
 import CartItem from '../../models/cart-item';
 
 const INITIAL_STATE = {
@@ -68,6 +73,22 @@ export default (state = INITIAL_STATE, action) => {
         in cart reducer, and add the order in ordersReducer, as soon as an order is made */
         case ADD_ORDER: {
             return INITIAL_STATE;
+        }
+
+        /* If a product item has been deleted by the owner then that product should also
+        not be present in cart */
+        case DELETE_PRODUCT: {
+            if (!state.items[action.payload]) {
+                return state;
+            }
+            const updatedItems = { ...state.items };
+            const itemTotal = state.items[action.payload].sum;
+            delete updatedItems[action.payload];
+            return ({
+                ...state,
+                items: updatedItems,
+                totalAmount: state.totalAmount - itemTotal
+            });
         }
 
         default: return state;
