@@ -3,7 +3,8 @@ import {
  Button,
  View,
  StyleSheet,
- FlatList
+ FlatList,
+ Alert
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -28,6 +29,20 @@ const UserProductScreen = (props) => {
         })
     );
 
+    const deleteProductHandler = (prodId) => {
+        Alert.alert('Confirm Delete', 'Are you sure you want to delete this product', [
+            {
+                text: 'No',
+                style: 'default' /* Do nothing, close the confirm box */
+            },
+            {
+                text: 'Yes',
+                style: 'destructive', /* Do something, close the confirm box */
+                onPress: () => dispatch(deleteProduct(prodId))
+            }
+        ]);
+    };
+
     return (
         <View style={styles.screen}>
             <FlatList
@@ -50,7 +65,7 @@ const UserProductScreen = (props) => {
                                 />
                                 <Button
                                 title="Delete"
-                                onPress={() => { dispatch(deleteProduct(itemData.item.id)); }}
+                                onPress={() => deleteProductHandler(itemData.item.id)}
                                 color={Colors.Accent}
                                 style={styles.button}
                                 />
