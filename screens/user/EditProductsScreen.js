@@ -42,6 +42,7 @@ const EditProductsScreen = (props) => {
             title, imageUrl, description, +price
             ));
         }
+        navigation.navigate('UserProducts');
     }, [description, dispatch, editedProduct, imageUrl, price, prodId, title]);
 
      /* Passing function to navigationOptions below so that it can be used in onPress
