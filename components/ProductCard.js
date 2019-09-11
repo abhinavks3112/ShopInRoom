@@ -5,13 +5,14 @@ import {
 
 import BodyText from './BodyText';
 import TitleText from './TitleText';
+import Card from './Card';
 
 const ProductCard = (props) => {
     const {
         title, price, imageUrl, onSelect, children
     } = props;
     return (
-        <View style={styles.card}>
+        <Card style={styles.card}>
             <View style={styles.touchable}>
                 <TouchableNativeFeedback
                 onPress={onSelect}
@@ -36,7 +37,7 @@ const ProductCard = (props) => {
                     </View>
                 </TouchableNativeFeedback>
             </View>
-        </View>
+        </Card>
     );
 };
 
@@ -47,22 +48,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width > 300 ? Dimensions.get('window').width * 0.9 : 300,
         minWidth: 250,
         margin: 10,
-        paddingBottom: 10,
-
-        // border
-        borderColor: 'lightgrey',
-        borderWidth: 1,
-        borderRadius: 10,
-
-        // shadow
-        elevation: 2,
-        shadowColor: 'black',
-        shadowOffset: {
-            width: 0,
-            height: 1
-        },
-        shadowRadius: 10,
-        shadowOpacity: 0.3
+        paddingBottom: 10
     },
     touchable: {
         overflow: 'hidden',

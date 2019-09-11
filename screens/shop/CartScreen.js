@@ -9,6 +9,7 @@ import Colors from '../../constants/Colors';
 import TitleText from '../../components/TitleText';
 import BodyText from '../../components/BodyText';
 import CartItem from '../../components/CartItems';
+import Card from '../../components/Card';
 
 // actions
 import { removeFromCart } from '../../store/actions/cartAction';
@@ -52,11 +53,12 @@ const CartScreen = () => {
                 />
             );
         }
+        return null;
     };
 
     return (
         <View style={styles.screen}>
-            <View style={styles.summary}>
+            <Card style={styles.summary}>
                 <BodyText style={styles.summaryText}>
                     Total:
                     {' '}
@@ -72,7 +74,7 @@ const CartScreen = () => {
                 color={Colors.Accent}
                 disabled={itemsInCart.length === 0} // Disable button if no item added
                 />
-            </View>
+            </Card>
             {renderItemList()}
         </View>
     );
@@ -92,22 +94,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20,
-        padding: 10,
-
-        // border
-        borderColor: 'lightgrey',
-        borderWidth: 1,
-        borderRadius: 10,
-
-        // shadow
-        elevation: 2,
-        shadowColor: 'black',
-        shadowOffset: {
-            width: 0,
-            height: 1
-        },
-        shadowRadius: 10,
-        shadowOpacity: 0.3
+        padding: 10
     },
     summaryText: {
         fontSize: 18,

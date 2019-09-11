@@ -10,6 +10,7 @@ import BodyText from './BodyText';
 import TitleText from './TitleText';
 import Colors from '../constants/Colors';
 import CartItem from './CartItems';
+import Card from './Card';
 
 const OrderItem = (props) => {
     const {
@@ -39,10 +40,11 @@ const OrderItem = (props) => {
                 </View>
             );
         }
+        return null;
     };
 
     return (
-        <View style={styles.content}>
+        <Card style={styles.content}>
             <TitleText style={styles.title}>{orderId}</TitleText>
             <View style={styles.orderSummary}>
                 <BodyText style={styles.date}>{orderDate}</BodyText>
@@ -56,29 +58,14 @@ const OrderItem = (props) => {
                 />
             </View>
             {renderItemList()}
-        </View>
+        </Card>
     );
 };
 
 const styles = StyleSheet.create({
     content: {
         margin: 10,
-        padding: 10,
-
-        // border
-        borderColor: 'lightgrey',
-        borderWidth: 1,
-        borderRadius: 10,
-
-        // shadow
-        elevation: 2,
-        shadowColor: 'black',
-        shadowOffset: {
-            width: 0,
-            height: 1
-        },
-        shadowRadius: 10,
-        shadowOpacity: 0.3
+        padding: 10
     },
     orderSummary: {
         flexDirection: 'row',
