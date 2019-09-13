@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useReducer } from 'react';
 import {
  View,
  Text,
@@ -14,6 +14,16 @@ import CustomHeaderButton from '../../components/HeaderButton';
 import TitleText from '../../components/TitleText';
 import * as ProductAction from '../../store/actions/productsAction';
 
+// action type
+const FORM_INPUT_CHANGE = 'FORM_INPUT_CHANGE';
+
+// reducer
+const formInputReducer = (state, action) => {
+    switch (action.type) {
+        default: return state;
+    }
+};
+
 const EditProductsScreen = (props) => {
     const { navigation } = props;
     const dispatch = useDispatch();
@@ -24,14 +34,24 @@ const EditProductsScreen = (props) => {
         (product) => product.id === prodId
     ));
 
-    // value for textinput
-    const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
-    const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
-    const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
-    const [price, setPrice] = useState('');
-
-    // validation for input state
-    const [isTitleValid, setIsTitleValid] = useState(false);
+    /* Using the reducer using useReducer and supplying initial state values
+    and getting an array in return which has slice of state variable or state snapshot
+    and dispatch function */
+    const [formInputState, dispatchFormActions] = useReducer(formInputReducer, {
+        inputs: {
+            title: editedProduct ? editedProduct.title : '',
+            imageUrl: editedProduct ? editedProduct.imageUrl : '',
+            description: editedProduct ? editedProduct.description : '',
+            price: ''
+        },
+        inputValidator: {
+            title: !!editedProduct,
+            imageUrl: !!editedProduct,
+            description: !!editedProduct,
+            price: !!editedProduct
+        },
+        isFormValid: !!editedProduct
+    });
 
     /* If we do not specify the title, description, etc in the dependency list then
     the value for those variables inside never updates when the user changes
@@ -62,12 +82,18 @@ const EditProductsScreen = (props) => {
     }, [submitHandler]);
 
     const titleChangeHandler = (text) => {
-        if (text.trim().length === 0) {
-            setIsTitleValid(false);
-        } else {
-            setIsTitleValid(true);
+        let isValid = false;
+        if (text.trim().length > 0) {
+           isValid = true;
         }
-        setTitle(text);
+        /* Dispatching action as an object with action type and
+        any other necessary data(property name can be anything) */
+        dispatchFormActions({
+            type: FORM_INPUT_CHANGE,
+            value: text,
+            isValid,
+            inputId: 'title'
+        });
     };
 
     return (
