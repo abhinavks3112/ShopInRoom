@@ -3,7 +3,8 @@ import {
  View,
  ScrollView,
  StyleSheet,
- Alert
+ Alert,
+ KeyboardAvoidingView
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -134,91 +135,96 @@ const EditProductsScreen = (props) => {
     );
 
     return (
-        <View style={styles.screen}>
-            <ScrollView>
-                <View style={styles.form}>
-                    <Input
-                    id="title"
-                    label="Title"
-                    errorText="Please enter a valid title!!"
-                    keyboardType="default"
-                    autoCapitalize="words"
-                    autoCorrect
-                    autoFocus
-                    returnKeyType="next" // Only displays the return key on keyboard as next button
-                    // When we use bind then a new instance will be created each time so it
-                    // will re-render and cause infinite loop
-                    // beacuse we have used useCallback
-                    // onInputChange={inputChangeHandler.bind(this, 'title')}
-                    // Same with case here, ie arrow function, anonymous function will be
-                    // recreated each render and this
-                    // will cause infinite loop
-                    // onInputChange={
-                    // (inputValue, inputValidity) => inputChangeHandler(
-                    //    'title', inputValue, inputValidity
-                    //  )
-                    // }
-                    // So best case scenario is to pass the data and functions
-                    // as props to child component
-                    // and pass the argument from inside the child component,
-                    // by calling the function from inside only,
-                    // eg in our case, pass id as props and rest of the arguments,
-                    // we are already getting from inside the child component
-                    // i.e input value and its validity
-                    onInputChange={inputChangeHandler}
-                    initialValue={editedProduct ? editedProduct.title : ''}
-                    initiallyValid={!!editedProduct}
-                    // validation criteria
-                    required
-                    />
-                    <Input
-                    id="imageUrl"
-                    label="Image Url"
-                    errorText="Please enter a valid Image Url!!"
-                    keyboardType="url"
-                    returnKeyType="next" // Only displays the return key on keyboard as next button
-                    onInputChange={inputChangeHandler}
-                    initialValue={editedProduct ? editedProduct.imageUrl : ''}
-                    initiallyValid={!!editedProduct}
-                    // validation criteria
-                    required
-                    />
-                    <Input
-                    id="description"
-                    label="Description"
-                    errorText="Please enter a valid description!!"
-                    keyboardType="default"
-                    autoCapitalize="sentences"
-                    multiline
-                    numberOfLines={3}
-                    autoCorrect
-                    returnKeyType="next" // Only displays the return key on keyboard as next button
-                    onInputChange={inputChangeHandler}
-                    initialValue={editedProduct ? editedProduct.description : ''}
-                    initiallyValid={!!editedProduct}
-                    // validation criteria
-                    required
-                    minLength={5}
-                    />
-                    {
-                        editedProduct
-                        ? null
-                        : (
-                            <Input
-                            id="price"
-                            label="Price"
-                            errorText="Please enter a valid price!!"
-                            keyboardType="decimal-pad"
-                            onInputChange={inputChangeHandler}
-                            // validation criteria
-                            required
-                            min={0.1}
-                            />
-                        )
-                    }
-                </View>
-            </ScrollView>
-        </View>
+        <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="padding"
+        keyboardVerticalOffset={100}
+        >
+            <View style={styles.screen}>
+                <ScrollView>
+                    <View style={styles.form}>
+                        <Input
+                        id="title"
+                        label="Title"
+                        errorText="Please enter a valid title!!"
+                        keyboardType="default"
+                        autoCapitalize="words"
+                        autoCorrect
+                        returnKeyType="next" // Only displays the return key on keyboard as next button
+                        // When we use bind then a new instance will be created each time so it
+                        // will re-render and cause infinite loop
+                        // beacuse we have used useCallback
+                        // onInputChange={inputChangeHandler.bind(this, 'title')}
+                        // Same with case here, ie arrow function, anonymous function will be
+                        // recreated each render and this
+                        // will cause infinite loop
+                        // onInputChange={
+                        // (inputValue, inputValidity) => inputChangeHandler(
+                        //    'title', inputValue, inputValidity
+                        //  )
+                        // }
+                        // So best case scenario is to pass the data and functions
+                        // as props to child component
+                        // and pass the argument from inside the child component,
+                        // by calling the function from inside only,
+                        // eg in our case, pass id as props and rest of the arguments,
+                        // we are already getting from inside the child component
+                        // i.e input value and its validity
+                        onInputChange={inputChangeHandler}
+                        initialValue={editedProduct ? editedProduct.title : ''}
+                        initiallyValid={!!editedProduct}
+                        // validation criteria
+                        required
+                        />
+                        <Input
+                        id="imageUrl"
+                        label="Image Url"
+                        errorText="Please enter a valid Image Url!!"
+                        keyboardType="url"
+                        returnKeyType="next" // Only displays the return key on keyboard as next button
+                        onInputChange={inputChangeHandler}
+                        initialValue={editedProduct ? editedProduct.imageUrl : ''}
+                        initiallyValid={!!editedProduct}
+                        // validation criteria
+                        required
+                        />
+                        <Input
+                        id="description"
+                        label="Description"
+                        errorText="Please enter a valid description!!"
+                        keyboardType="default"
+                        autoCapitalize="sentences"
+                        multiline
+                        numberOfLines={3}
+                        autoCorrect
+                        returnKeyType="next" // Only displays the return key on keyboard as next button
+                        onInputChange={inputChangeHandler}
+                        initialValue={editedProduct ? editedProduct.description : ''}
+                        initiallyValid={!!editedProduct}
+                        // validation criteria
+                        required
+                        minLength={5}
+                        />
+                        {
+                            editedProduct
+                            ? null
+                            : (
+                                <Input
+                                id="price"
+                                label="Price"
+                                errorText="Please enter a valid price!!"
+                                keyboardType="decimal-pad"
+                                onInputChange={inputChangeHandler}
+                                // validation criteria
+                                required
+                                min={0.1}
+                                />
+                            )
+                        }
+                    </View>
+                </ScrollView>
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 

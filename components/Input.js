@@ -50,9 +50,9 @@ const Input = (props) => {
     /* We have value of each keystroke that user entered and its validity, so
     we will forward this data to parent using useEffect after the user has
     left the current input box */
-    useEffect(() => {        
+    useEffect(() => {
             /* Expect to receive a function from parent which will receive these arguments */
-            onInputChange(id, inputState.value, inputState.isValid);      
+            onInputChange(id, inputState.value, inputState.isValid);
     }, [id, inputState, onInputChange]);
 
     // Check validity of input on each keystroke
@@ -109,8 +109,14 @@ const Input = (props) => {
             onBlur={lostFocusHandler}
             />
             {
+                // To show error(if any) after user has moved to next Input box
                 !inputState.isValid
-            && <Text>{errorText}</Text>
+                && inputState.touched
+                && (
+                    <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>{errorText}</Text>
+                    </View>
+                )
             }
         </View>
     );
@@ -128,6 +134,14 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderBottomColor: '#ccc',
         borderBottomWidth: 1
+    },
+    errorContainer: {
+        marginVertical: 5
+    },
+    errorText: {
+        fontFamily: 'open-sans',
+        color: 'red',
+        fontSize: 13
     }
 });
 
