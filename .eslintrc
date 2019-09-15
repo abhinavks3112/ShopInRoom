@@ -8,7 +8,9 @@
         "react/jsx-indent": 0,
         "react/jsx-indent-props": 0,
         "comma-dangle": ["error", "never"],
-        "react/prop-types": 0
+        "react/prop-types": 0,
+        "guard-for-in": 0,
+        "no-restricted-syntax": 0
       },
     "parser": "babel-eslint",
     "settings": {

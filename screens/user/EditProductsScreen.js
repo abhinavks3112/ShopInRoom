@@ -1,8 +1,6 @@
 import React, { useEffect, useCallback, useReducer } from 'react';
 import {
  View,
- Text,
- TextInput,
  ScrollView,
  StyleSheet,
  Alert
@@ -11,13 +9,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import CustomHeaderButton from '../../components/HeaderButton';
-import TitleText from '../../components/TitleText';
 import * as ProductAction from '../../store/actions/productsAction';
+import Input from '../../components/Input';
 
 // action type
 const FORM_INPUT_CHANGE = 'FORM_INPUT_CHANGE';
 
-// reducer
+/* A reducer function(different from redux, all reducer function have
+same pattern of declaration) to handle our action  */
 const formInputReducer = (state, action) => {
     switch (action.type) {
         case FORM_INPUT_CHANGE: {
@@ -36,9 +35,9 @@ const formInputReducer = (state, action) => {
             for (const key in updatedInputValidity) {
                 console.log('Updated form valid is',
                 updatedIsFormValid,
-                 ' for key ', 
-                 key, ' and value ', isInputValid);
-                 isInputValid = !!updatedInputValidity[key];
+                 ' for key ',
+                key, ' and value ', isInputValid);
+                isInputValid = !!updatedInputValidity[key];
                 updatedIsFormValid = updatedIsFormValid && isInputValid;
             }
             console.log('Updated form validity', updatedIsFormValid);
@@ -63,9 +62,11 @@ const EditProductsScreen = (props) => {
         (product) => product.id === prodId
     ));
 
-    /* Using the reducer using useReducer and supplying initial state values
-    and getting an array in return which has slice of state variable or state snapshot
-    and dispatch function */
+    /* In useReducer we pass the reducer function that we created above
+    and in second argument, we pass initial state.
+    useReducer returns an array which has slice of state variable or state snapshot
+    and dispatch function.
+    Name of argument can be anything */
     const [formInputState, dispatchFormActions] = useReducer(formInputReducer, {
         inputs: {
             title: editedProduct ? editedProduct.title : '',
@@ -105,7 +106,7 @@ const EditProductsScreen = (props) => {
             ));
         }
         navigation.navigate('UserProducts');
-    }, [dispatch, editedProduct, formInputState, prodId]);
+    }, [dispatch, editedProduct, formInputState.inputs, formInputState.isFormValid, prodId]);
 
      /* Passing function to navigationOptions below so that it can be used in onPress
     action of save button */
@@ -113,88 +114,106 @@ const EditProductsScreen = (props) => {
         navigation.setParams({ submit: submitHandler });
     }, [submitHandler]);
 
-    const textChangeHandler = (inputIdentifier, text) => {
-        let isValid = false;
-        if (text.trim().length > 0) {
-           isValid = true;
-        }
-        /* Dispatching action as an object with action type and
-        any other necessary data(property name can be anything) */
-        dispatchFormActions({
-            type: FORM_INPUT_CHANGE,
-            value: text,
-            isValid,
-            inputId: inputIdentifier
-        });
-    };
+    const inputChangeHandler = useCallback(
+        (inputIdentifier, inputValue, inputValidity) => {
+            console.log('Input we are getting is ', inputValue, ' and validity is ', inputValidity);
+
+            /* Using the dispatch function that we got returned from useReducer,
+            we can pass action with an action type name(we can use any variable name to denote
+            type eg. id, type, etc) and any other necessary data(property name can be anything),
+            same as in redux */
+            dispatchFormActions({
+                type: FORM_INPUT_CHANGE,
+                value: inputValue,
+                isValid: inputValidity,
+                 /* To know which input triggered it, should be same as
+                specified in initial state of useReducer */
+                inputId: inputIdentifier
+            });
+        }, [dispatchFormActions]
+    );
 
     return (
         <View style={styles.screen}>
             <ScrollView>
                 <View style={styles.form}>
-                    <View style={styles.formControl}>
-                        <TitleText style={styles.label}>Title</TitleText>
-                        <TextInput
-                        style={styles.input}
-                        value={formInputState.inputs.title}
-                        onChangeText={(text) => textChangeHandler('title', text)}
-                        keyboardType="default"
-                        autoCapitalize="words"
-                        autoCorrect
-                        autoFocus
-                        returnKeyType="next" // Only displays the return key on keyboard as next button
-                        />
-                        {
-                            !formInputState.inputValidator.title
-                        && <Text>Please enter a valid title!!</Text>
-                        }
-                    </View>
-                    <View style={styles.formControl}>
-                        <TitleText style={styles.label}>Image Url</TitleText>
-                        <TextInput
-                        style={styles.input}
-                        value={formInputState.inputs.imageUrl}
-                        onChangeText={(text) => textChangeHandler('imageUrl', text)}
-                        keyboardType="url"
-                        />
-                         {
-                            !formInputState.inputValidator.imageUrl
-                        && <Text>Please enter a valid image Url!!</Text>
-                        }
-                    </View>
-                    <View style={styles.formControl}>
-                        <TitleText style={styles.label}>Description</TitleText>
-                        <TextInput
-                        style={styles.input}
-                        value={formInputState.inputs.description}
-                        onChangeText={(text) => textChangeHandler('description', text)}
-                        keyboardType="default"
-                        multiline
-                        />
-                         {
-                            !formInputState.inputValidator.description
-                        && <Text>Please enter a valid description!!</Text>
-                        }
-                    </View>
+                    <Input
+                    id="title"
+                    label="Title"
+                    errorText="Please enter a valid title!!"
+                    keyboardType="default"
+                    autoCapitalize="words"
+                    autoCorrect
+                    autoFocus
+                    returnKeyType="next" // Only displays the return key on keyboard as next button
+                    // When we use bind then a new instance will be created each time so it
+                    // will re-render and cause infinite loop
+                    // beacuse we have used useCallback
+                    // onInputChange={inputChangeHandler.bind(this, 'title')}
+                    // Same with case here, ie arrow function, anonymous function will be
+                    // recreated each render and this
+                    // will cause infinite loop
+                    // onInputChange={
+                    // (inputValue, inputValidity) => inputChangeHandler(
+                    //    'title', inputValue, inputValidity
+                    //  )
+                    // }
+                    // So best case scenario is to pass the data and functions
+                    // as props to child component
+                    // and pass the argument from inside the child component,
+                    // by calling the function from inside only,
+                    // eg in our case, pass id as props and rest of the arguments,
+                    // we are already getting from inside the child component
+                    // i.e input value and its validity
+                    onInputChange={inputChangeHandler}
+                    initialValue={editedProduct ? editedProduct.title : ''}
+                    initiallyValid={!!editedProduct}
+                    // validation criteria
+                    required
+                    />
+                    <Input
+                    id="imageUrl"
+                    label="Image Url"
+                    errorText="Please enter a valid Image Url!!"
+                    keyboardType="url"
+                    returnKeyType="next" // Only displays the return key on keyboard as next button
+                    onInputChange={inputChangeHandler}
+                    initialValue={editedProduct ? editedProduct.imageUrl : ''}
+                    initiallyValid={!!editedProduct}
+                    // validation criteria
+                    required
+                    />
+                    <Input
+                    id="description"
+                    label="Description"
+                    errorText="Please enter a valid description!!"
+                    keyboardType="default"
+                    autoCapitalize="sentences"
+                    multiline
+                    numberOfLines={3}
+                    autoCorrect
+                    returnKeyType="next" // Only displays the return key on keyboard as next button
+                    onInputChange={inputChangeHandler}
+                    initialValue={editedProduct ? editedProduct.description : ''}
+                    initiallyValid={!!editedProduct}
+                    // validation criteria
+                    required
+                    minLength={5}
+                    />
                     {
                         editedProduct
                         ? null
                         : (
-                            <View>
-                                <View style={styles.formControl}>
-                                    <TitleText style={styles.label}>Price</TitleText>
-                                    <TextInput
-                                    style={styles.input}
-                                    value={formInputState.inputs.price}
-                                    onChangeText={(text) => textChangeHandler('price', text)}
-                                    keyboardType="decimal-pad"
-                                    />
-                                </View>
-                                {
-                                !formInputState.inputValidator.price
-                                && <Text>Please enter a valid price!!</Text>
-                                }
-                            </View>
+                            <Input
+                            id="price"
+                            label="Price"
+                            errorText="Please enter a valid price!!"
+                            keyboardType="decimal-pad"
+                            onInputChange={inputChangeHandler}
+                            // validation criteria
+                            required
+                            min={0.1}
+                            />
                         )
                     }
                 </View>
@@ -232,18 +251,6 @@ const styles = StyleSheet.create({
     form: {
         margin: 10,
         padding: 10
-    },
-    formControl: {
-        width: '100%'
-    },
-    label: {
-        marginVertical: 10
-    },
-    input: {
-        paddingHorizontal: 2,
-        paddingVertical: 5,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1
     }
 });
 
