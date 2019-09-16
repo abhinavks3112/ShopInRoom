@@ -7,26 +7,43 @@ import {
  import Product from '../../models/product';
 
 export const fetchProducts = () => async (dispatch) => {
-    const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json');
-    const responseData = await response.json();
+    /* When using async await we use try catch block instead of .then().catch() format */
+    try {
+        const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json');
 
-    const loadedProducts = [];
-    for (const key in responseData) {
-        loadedProducts.push(new Product(
-        key,
-        'u1',
-        responseData[key].title,
-        responseData[key].imageUrl,
-        responseData[key].description,
-        responseData[key].price
-        ));
+        /* If response is not in 100-200 range then,
+        we can raise a new error(forward by throwing it) indicating the same, this
+        will be caught in catch block */
+        if (!response.ok) {
+            throw new Error('Something went wrong!!');
+        }
+        const responseData = await response.json();
+
+        const loadedProducts = [];
+        for (const key in responseData) {
+            loadedProducts.push(new Product(
+            key,
+            'u1',
+            responseData[key].title,
+            responseData[key].imageUrl,
+            responseData[key].description,
+            responseData[key].price
+            ));
+        }
+        console.log('Loaded Product is ', loadedProducts);
+
+        dispatch({
+            type: SET_PRODUCTS,
+            products: loadedProducts
+        });
+    } catch (err) {
+        // send to custom analytic server
+        /* If we are throwing err from catch block, it means try catch block is not required,
+        but if we had a server or path to handler error, we may write some code here.
+        Throwing error ultimately forwards it, so if we have code to access
+        this action result with try catch block, it will end up there */
+        throw err;
     }
-    console.log('Loaded Product is ', loadedProducts);
-
-    dispatch({
-        type: SET_PRODUCTS,
-        products: loadedProducts
-    });
 };
 
 export const deleteProduct = (productId) => ({

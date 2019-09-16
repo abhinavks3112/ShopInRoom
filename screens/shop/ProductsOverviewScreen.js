@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     Button,
     View,
     StyleSheet,
-    FlatList
+    FlatList,
+    ActivityIndicator // Spinner
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -14,16 +15,36 @@ import Colors from '../../constants/Colors';
 
 import * as productActions from '../../store/actions/productsAction';
 import { addToCart } from '../../store/actions/cartAction';
+import BodyText from '../../components/BodyText';
+import TitleText from '../../components/TitleText';
 
 
 const ProductsOverview = (props) => {
     const { navigation } = props;
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     const productsList = useSelector((state) => state.products.availableProducts);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(productActions.fetchProducts());
+    /* To use aync wait in useEffect, we need to create a dummy
+    wrapper function inside, otherwise it won't work, because then,
+    useEffect will return a promise, which is not how useEffect work */
+    const loadProducts = useCallback(async () => {
+        /* Multiple setState calls are batched together so,
+        the following won't cause multiple re-render cycles */
+        setError(null);
+        setIsLoading(true);
+        try {
+        await dispatch(productActions.fetchProducts());
+        } catch (err) {
+            setError(err.message);
+        }
+        setIsLoading(false);
     }, [dispatch]);
+
+    useEffect(() => {
+        loadProducts();
+    }, [loadProducts]);
 
     const onSelectItemHandler = (id, title) => (
         navigation.navigate(
@@ -33,6 +54,43 @@ const ProductsOverview = (props) => {
             }
         )
     );
+
+    // If we encounter an error dispaly error message
+    if (error) {
+        return (
+            <View style={styles.screen}>
+                <TitleText>{error}</TitleText>
+                <View style={styles.tryAgain}>
+                    <Button
+                    title="Try Again"
+                    onPress={loadProducts}
+                    color={Colors.Primary}
+                    />
+                </View>
+            </View>
+        );
+    }
+
+    // Show a spinner if loading is not finished
+    if (isLoading) {
+        return (
+            <View style={styles.screen}>
+                <ActivityIndicator
+                size="large"
+                color={Colors.Primary}
+                />
+            </View>
+        );
+    }
+
+    // If loading is finished and we have no products to show
+    if (!isLoading && productsList.length === 0) {
+        return (
+            <View style={styles.screen}>
+               <BodyText>No Products found, maybe try adding some!!</BodyText>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.screen}>
@@ -111,6 +169,9 @@ const styles = StyleSheet.create({
     },
     button: {
         borderRadius: 10
+    },
+    tryAgain: {
+        marginVertical: 10
     }
 });
 
