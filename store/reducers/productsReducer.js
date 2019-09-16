@@ -15,13 +15,14 @@ const productsReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
         case CREATE_PRODUCT: {
             const {
+                id,
                 title,
                 imageUrl,
                 description,
                 price
             } = action.payload;
             const newProduct = new Product(
-                new Date().toString(),
+                id,
                 'u1',
                 title,
                 imageUrl,
