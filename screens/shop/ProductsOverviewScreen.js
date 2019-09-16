@@ -42,6 +42,35 @@ const ProductsOverview = (props) => {
         setIsLoading(false);
     }, [dispatch]);
 
+    /* In stack naviagtion, moving back from one stack and then going back destroys and recreate
+    that component, but in drawer navigation, everything is kept in memory so all pages are loaded
+    once and hence any change in server doesn't get fetched, since fetch will only get called
+    on re-render which is not happening here, so, for this, we need to set up a naviagtion listener
+    and on change of navigation, call our server for fetching data. */
+    useEffect(() => {
+        /* Listener will be added after the component has finished rendering for the first time,
+        so it won't fire initially, product won't be loaded. It will only work second time, i.e
+        after naviagting back to this component from some othe component.
+        Second useEffect down below will take care of loading product for first time since
+        it is not adding any listener, just calling fetch immediatly. */
+        const willFocusListener = navigation.addListener('willFocus', loadProducts);
+
+        /* Return a cleanup function which runs
+        1. component is unmounted or destroyed
+        2. useEffect is about to re-run.
+        So here, we will cleanup the listener otherwise
+        a new listener instance will pop up on each render
+        and we will end up with multiple listener listening to same event */
+        return (() => {
+            willFocusListener.remove();
+        });
+
+    /* Will avoid adding navigation to dependency since if something else in naviagtion changes,
+    it will cause it to re-run eg. if setParams to communicate with our header navigation,
+    then we could enter an infinite loop here */
+    }, [loadProducts]);
+
+    /* Second useEffect, fires as soon as component is loaded */
     useEffect(() => {
         loadProducts();
     }, [loadProducts]);
