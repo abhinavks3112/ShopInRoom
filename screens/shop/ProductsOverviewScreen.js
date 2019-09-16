@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Button,
     View,
@@ -11,6 +11,8 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/HeaderButton';
 import ProductCard from '../../components/ProductCard';
 import Colors from '../../constants/Colors';
+
+import * as productActions from '../../store/actions/productsAction';
 import { addToCart } from '../../store/actions/cartAction';
 
 
@@ -18,6 +20,10 @@ const ProductsOverview = (props) => {
     const { navigation } = props;
     const productsList = useSelector((state) => state.products.availableProducts);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(productActions.fetchProducts());
+    }, [dispatch]);
 
     const onSelectItemHandler = (id, title) => (
         navigation.navigate(

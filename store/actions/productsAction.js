@@ -1,8 +1,33 @@
 import {
     DELETE_PRODUCT,
     CREATE_PRODUCT,
-    UPDATE_PRODUCT
+    UPDATE_PRODUCT,
+    SET_PRODUCTS
  } from './types';
+ import Product from '../../models/product';
+
+export const fetchProducts = () => async (dispatch) => {
+    const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json');
+    const responseData = await response.json();
+
+    const loadedProducts = [];
+    for (const key in responseData) {
+        loadedProducts.push(new Product(
+        key,
+        'u1',
+        responseData[key].title,
+        responseData[key].imageUrl,
+        responseData[key].description,
+        responseData[key].price
+        ));
+    }
+    console.log('Loaded Product is ', loadedProducts);
+
+    dispatch({
+        type: SET_PRODUCTS,
+        products: loadedProducts
+    });
+};
 
 export const deleteProduct = (productId) => ({
     type: DELETE_PRODUCT,

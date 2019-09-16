@@ -2,7 +2,8 @@ import PRODUCTS from '../../data/dummy-data.js';
 import {
     DELETE_PRODUCT,
     CREATE_PRODUCT,
-    UPDATE_PRODUCT
+    UPDATE_PRODUCT,
+    SET_PRODUCTS
  } from '../actions/types';
 import Product from '../../models/product';
 
@@ -13,6 +14,12 @@ const INITIAL_STATE = {
 
 const productsReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case SET_PRODUCTS: {
+            return {
+                availableProducts: action.products,
+                userProducts: action.products.filter((product) => product.ownerId === 'u1')
+            };
+        }
         case CREATE_PRODUCT: {
             const {
                 id,
