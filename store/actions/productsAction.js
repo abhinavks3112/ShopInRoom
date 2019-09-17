@@ -47,12 +47,18 @@ export const fetchProducts = () => async (dispatch) => {
 };
 
 export const deleteProduct = (productId) => async (dispatch) => {
-    await fetch(`https://shopinroom-65e62.firebaseio.com/products/${productId}.json`, {
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${productId}.json`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
         }
     });
+     /* If response is not in 100-200 range then,
+    we can raise a new error(forward by throwing it) indicating the same,
+    this will be caught in catch block */
+    if (!response.ok) {
+        throw new Error('Something went wrong, please Try Again');
+    }
     dispatch({
         type: DELETE_PRODUCT,
         payload: productId
@@ -110,8 +116,7 @@ export const updateProduct = (
     imageUrl,
     description
    ) => async (dispatch) => {
-    /* Since this is an update, no need to store it in const, just wait for it to complete */
-    await fetch(`https://shopinroom-65e62.firebaseio.com/products/${id}.json`, {
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${id}.json`, {
         /* PATCH Http method does partial updates in the place where we tell it,
         whereas PUT method replaces the original version entirely */
         method: 'PATCH',
@@ -124,6 +129,13 @@ export const updateProduct = (
             description
         })
     });
+
+    /* If response is not in 100-200 range then,
+    we can raise a new error(forward by throwing it) indicating the same,
+    this will be caught in catch block */
+    if (!response.ok) {
+        throw new Error('Something went wrong, please Try Again');
+    }
 
     dispatch({
         type: UPDATE_PRODUCT,

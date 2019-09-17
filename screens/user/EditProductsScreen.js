@@ -1,17 +1,23 @@
-import React, { useEffect, useCallback, useReducer } from 'react';
+import React, {
+ useEffect, useCallback, useReducer, useState
+} from 'react';
 import {
  View,
  ScrollView,
  StyleSheet,
  Alert,
- KeyboardAvoidingView
+ KeyboardAvoidingView,
+ ActivityIndicator
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
-import CustomHeaderButton from '../../components/HeaderButton';
-import * as ProductAction from '../../store/actions/productsAction';
 import Input from '../../components/Input';
+import Colors from '../../constants/Colors';
+import CustomHeaderButton from '../../components/HeaderButton';
+
+import * as ProductAction from '../../store/actions/productsAction';
+
 
 // action type
 const FORM_INPUT_CHANGE = 'FORM_INPUT_CHANGE';
@@ -55,6 +61,8 @@ const formInputReducer = (state, action) => {
 
 const EditProductsScreen = (props) => {
     const { navigation } = props;
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     const dispatch = useDispatch();
 
     const prodId = navigation.getParam('id');
@@ -84,10 +92,17 @@ const EditProductsScreen = (props) => {
         isFormValid: !!editedProduct
     });
 
+    // Display an alert if an error is encountered
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error', error, [{ text: 'Okay' }]);
+        }
+    }, [error]);
+
     /* If we do not specify the title, description, etc in the dependency list then
     the value for those variables inside never updates when the user changes
     those value, they always remain blank or initial values */
-    const submitHandler = useCallback(() => {
+    const submitHandler = useCallback(async () => {
         const {
         title, imageUrl, description, price
         } = formInputState.inputs;
@@ -95,18 +110,25 @@ const EditProductsScreen = (props) => {
             Alert.alert('Wrong Input!!', 'Please check the errors in the form.', [{ text: 'Okay' }]);
             return;
         }
-        if (editedProduct) {
-            dispatch(ProductAction.updateProduct(
-            prodId, title, imageUrl, description
-            ));
-        } else {
-            /* Adding unary plus if your string is already in the form of an integer:
-            + sign before price convert it from string to number */
-            dispatch(ProductAction.createProduct(
-            title, imageUrl, description, +price
-            ));
+        try {
+            setError(null);
+            setIsLoading(true);
+            if (editedProduct) {
+                await dispatch(ProductAction.updateProduct(
+                prodId, title, imageUrl, description
+                ));
+            } else {
+                /* Adding unary plus if your string is already in the form of an integer:
+                + sign before price convert it from string to number */
+                await dispatch(ProductAction.createProduct(
+                title, imageUrl, description, +price
+                ));
+            }
+            navigation.navigate('UserProducts');
+        } catch (err) {
+            setError(err.message);
         }
-        navigation.navigate('UserProducts');
+        setIsLoading(false);
     }, [dispatch, editedProduct, formInputState.inputs, formInputState.isFormValid, prodId]);
 
      /* Passing function to navigationOptions below so that it can be used in onPress
@@ -133,6 +155,18 @@ const EditProductsScreen = (props) => {
             });
         }, [dispatchFormActions]
     );
+
+    // Show a spinner if loading is not finished
+    if (isLoading) {
+        return (
+            <View style={styles.screen}>
+                <ActivityIndicator
+                size="large"
+                color={Colors.Primary}
+                />
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView
@@ -250,9 +284,9 @@ EditProductsScreen.navigationOptions = (navData) => {
 
 const styles = StyleSheet.create({
     screen: {
-        flex: 1
-       /*  justifyContent: 'center',
-        alignItems: 'center' */
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     form: {
         margin: 10,
