@@ -46,10 +46,18 @@ export const fetchProducts = () => async (dispatch) => {
     }
 };
 
-export const deleteProduct = (productId) => ({
-    type: DELETE_PRODUCT,
-    payload: productId
-});
+export const deleteProduct = (productId) => async (dispatch) => {
+    await fetch(`https://shopinroom-65e62.firebaseio.com/products/${productId}.json`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    dispatch({
+        type: DELETE_PRODUCT,
+        payload: productId
+    });
+};
 
 /* Using redux thunk here, we now instead of returning an object or action,
 we return a function which receive dispatch as argument, inside of this function,
@@ -101,12 +109,29 @@ export const updateProduct = (
     title,
     imageUrl,
     description
-   ) => ({
-    type: UPDATE_PRODUCT,
-    payload: {
-        id,
-        title,
-        imageUrl,
-        description
-    }
-});
+   ) => async (dispatch) => {
+    /* Since this is an update, no need to store it in const, just wait for it to complete */
+    await fetch(`https://shopinroom-65e62.firebaseio.com/products/${id}.json`, {
+        /* PATCH Http method does partial updates in the place where we tell it,
+        whereas PUT method replaces the original version entirely */
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title,
+            imageUrl,
+            description
+        })
+    });
+
+    dispatch({
+        type: UPDATE_PRODUCT,
+        payload: {
+            id,
+            title,
+            imageUrl,
+            description
+        }
+    });
+};

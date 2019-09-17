@@ -1,5 +1,8 @@
 {
-    "extends": ["airbnb", "airbnb/hooks"],    
+    "extends": ["airbnb", "airbnb/hooks"],
+    "globals": {
+      "fetch": false     
+    },    
     "rules": {
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "no-use-before-define": ["error", { "variables": false }],
@@ -10,7 +13,8 @@
         "comma-dangle": ["error", "never"],
         "react/prop-types": 0,
         "guard-for-in": 0,
-        "no-restricted-syntax": 0
+        "no-restricted-syntax": 0,
+        "global-require": 0
       },
     "parser": "babel-eslint",
     "settings": {
