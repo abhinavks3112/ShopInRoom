@@ -6,8 +6,7 @@ import {
  ScrollView,
  StyleSheet,
  Alert,
- KeyboardAvoidingView,
- ActivityIndicator
+ KeyboardAvoidingView
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -15,6 +14,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Input from '../../components/Input';
 import Colors from '../../constants/Colors';
 import CustomHeaderButton from '../../components/HeaderButton';
+import Spinner from '../../components/Spinner';
 
 import * as ProductAction from '../../store/actions/productsAction';
 
@@ -33,7 +33,7 @@ const formInputReducer = (state, action) => {
             };
             console.log('Updated Input value', updatedInputValue);
             const updatedInputValidity = {
-                ...state.inputs,
+                ...state.inputValidator,
                 [action.inputId]: action.isValid
             };
             console.log('Updated Input validity', updatedInputValidity);
@@ -47,7 +47,7 @@ const formInputReducer = (state, action) => {
                 isInputValid = !!updatedInputValidity[key];
                 updatedIsFormValid = updatedIsFormValid && isInputValid;
             }
-            console.log('Updated form validity', updatedIsFormValid);
+            console.log('Updated form validity', updatedIsFormValid, updatedInputValidity);
             return {
                 ...state,
                 inputs: updatedInputValue,
@@ -159,12 +159,10 @@ const EditProductsScreen = (props) => {
     // Show a spinner if loading is not finished
     if (isLoading) {
         return (
-            <View style={styles.screen}>
-                <ActivityIndicator
-                size="large"
-                color={Colors.Primary}
-                />
-            </View>
+            <Spinner
+            spinnerSize="large"
+            spinnerColor={Colors.Primary}
+            />
         );
     }
 
@@ -206,7 +204,7 @@ const EditProductsScreen = (props) => {
                         // i.e input value and its validity
                         onInputChange={inputChangeHandler}
                         initialValue={editedProduct ? editedProduct.title : ''}
-                        initiallyValid={!!editedProduct}
+                        initiallyValid={formInputState.inputValidator.title}
                         // validation criteria
                         required
                         />
@@ -218,7 +216,7 @@ const EditProductsScreen = (props) => {
                         returnKeyType="next" // Only displays the return key on keyboard as next button
                         onInputChange={inputChangeHandler}
                         initialValue={editedProduct ? editedProduct.imageUrl : ''}
-                        initiallyValid={!!editedProduct}
+                        initiallyValid={formInputState.inputValidator.imageUrl}
                         // validation criteria
                         required
                         />
@@ -234,7 +232,7 @@ const EditProductsScreen = (props) => {
                         returnKeyType="next" // Only displays the return key on keyboard as next button
                         onInputChange={inputChangeHandler}
                         initialValue={editedProduct ? editedProduct.description : ''}
-                        initiallyValid={!!editedProduct}
+                        initiallyValid={formInputState.inputValidator.description}
                         // validation criteria
                         required
                         minLength={5}
@@ -283,10 +281,8 @@ EditProductsScreen.navigationOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+   screen: {
+        flex: 1
     },
     form: {
         margin: 10,
