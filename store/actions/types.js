@@ -4,6 +4,7 @@ export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 
 // Orders Actions
 export const ADD_ORDER = 'ADD_ORDER';
+export const SET_ORDERS = 'SET_ORDERS';
 
 // Product Actions
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
