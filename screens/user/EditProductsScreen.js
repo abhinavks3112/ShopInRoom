@@ -31,23 +31,19 @@ const formInputReducer = (state, action) => {
                 ...state.inputs,
                 [action.inputId]: action.value
             };
-            console.log('Updated Input value', updatedInputValue);
+
             const updatedInputValidity = {
                 ...state.inputValidator,
                 [action.inputId]: action.isValid
             };
-            console.log('Updated Input validity', updatedInputValidity);
+
             let updatedIsFormValid = true;
             let isInputValid = true;
             for (const key in updatedInputValidity) {
-                console.log('Updated form valid is',
-                updatedIsFormValid,
-                 ' for key ',
-                key, ' and value ', isInputValid);
                 isInputValid = !!updatedInputValidity[key];
                 updatedIsFormValid = updatedIsFormValid && isInputValid;
             }
-            console.log('Updated form validity', updatedIsFormValid, updatedInputValidity);
+
             return {
                 ...state,
                 inputs: updatedInputValue,
@@ -139,8 +135,6 @@ const EditProductsScreen = (props) => {
 
     const inputChangeHandler = useCallback(
         (inputIdentifier, inputValue, inputValidity) => {
-            console.log('Input we are getting is ', inputValue, ' and validity is ', inputValidity);
-
             /* Using the dispatch function that we got returned from useReducer,
             we can pass action with an action type name(we can use any variable name to denote
             type eg. id, type, etc) and any other necessary data(property name can be anything),

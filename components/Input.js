@@ -13,7 +13,6 @@ const INPUT_BLUR = 'INPUT_BLUR';
 const inputReducer = (state, action) => {
     switch (action.type) {
         case INPUT_CHANGE: {
-           console.log('Input change action triggered with value ', action.value, ' and validity', action.isValid);
            return {
                 ...state,
                 value: action.value,
@@ -21,7 +20,6 @@ const inputReducer = (state, action) => {
             };
         }
         case INPUT_BLUR: {
-            console.log('Focus is lost now');
             return {
                 ...state,
                 touched: true
@@ -36,7 +34,7 @@ const Input = (props) => {
     const {
         id, label, errorText, initialValue, initiallyValid, onInputChange
     } = props;
-    console.log('Inpu comp called for label', label);
+
     /* Returned: Slice of state, Dispatch function
     Parameter: Specified the reducer, initial state values */
     const [inputState, dispatch] = useReducer(inputReducer, {
@@ -82,7 +80,7 @@ const Input = (props) => {
         if (props.minLength != null && text.length < props.minLength) {
         isValid = false;
         }
-        console.log('In Input change handler, action is now beiung dispatched');
+
         dispatch({
             type: INPUT_CHANGE,
             value: text,

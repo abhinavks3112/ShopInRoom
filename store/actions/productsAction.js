@@ -30,7 +30,6 @@ export const fetchProducts = () => async (dispatch) => {
             responseData[key].price
             ));
         }
-        console.log('Loaded Product is ', loadedProducts);
 
         dispatch({
             type: SET_PRODUCTS,
@@ -73,10 +72,9 @@ export const createProduct = (
  imageUrl,
  description,
  price
-) =>
+) => async (dispatch) => {
     /* Using async await syntax for readability.
     In background, it translate to fetch().then() syntax */
-    async (dispatch) => {
     // Any async code here
     const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json', {
         method: 'POST',
@@ -95,8 +93,6 @@ export const createProduct = (
 
     /* We have to put await in on every async promise */
     const responseData = await response.json();
-
-    console.log(responseData);
 
     dispatch({
         type: CREATE_PRODUCT,

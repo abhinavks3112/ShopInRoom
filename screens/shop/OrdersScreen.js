@@ -25,7 +25,6 @@ const OrdersScreen = (props) => {
         try {
             setError(null);
             setIsRefreshing(true);
-            console.log('Dispatching order fetch action');
             await dispatch(fetchOrders());
         } catch (err) {
             setError(err.message);

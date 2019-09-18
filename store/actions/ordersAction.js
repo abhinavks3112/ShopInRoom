@@ -7,7 +7,7 @@ export const fetchOrders = () => async (dispatch) => {
         throw new Error('Something went wrong!! Please Try Again!!!');
     }
     const responseData = await response.json();
-    console.log('Orders Data is ', responseData);
+
     const loadedOrders = [];
     for (const key in responseData) {
         loadedOrders.push(new Order(
