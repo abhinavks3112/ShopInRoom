@@ -3,8 +3,7 @@ import {
     Button,
     View,
     StyleSheet,
-    FlatList,
-    ActivityIndicator // Spinner
+    FlatList
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -16,8 +15,8 @@ import Colors from '../../constants/Colors';
 import * as productActions from '../../store/actions/productsAction';
 import { addToCart } from '../../store/actions/cartAction';
 import BodyText from '../../components/BodyText';
-import TitleText from '../../components/TitleText';
-
+import Error from '../../components/Error';
+import Spinner from '../../components/Spinner';
 
 const ProductsOverview = (props) => {
     const { navigation } = props;
@@ -87,28 +86,21 @@ const ProductsOverview = (props) => {
     // If we encounter an error dispaly error message
     if (error) {
         return (
-            <View style={styles.screen}>
-                <TitleText>{error}</TitleText>
-                <View style={styles.tryAgain}>
-                    <Button
-                    title="Try Again"
-                    onPress={loadProducts}
-                    color={Colors.Primary}
-                    />
-                </View>
-            </View>
+        <Error
+        errorText={error}
+        onReloadDoThis={loadProducts}
+        buttonColor={Colors.Primary}
+        />
         );
     }
 
     // Show a spinner if loading is not finished
     if (isLoading) {
         return (
-            <View style={styles.screen}>
-                <ActivityIndicator
-                size="large"
-                color={Colors.Primary}
-                />
-            </View>
+            <Spinner
+            spinnerSize="large"
+            spinnerColor={Colors.Primary}
+            />
         );
     }
 
@@ -198,9 +190,6 @@ const styles = StyleSheet.create({
     },
     button: {
         borderRadius: 10
-    },
-    tryAgain: {
-        marginVertical: 10
     }
 });
 
