@@ -21,6 +21,7 @@ import Spinner from '../../components/Spinner';
 const ProductsOverview = (props) => {
     const { navigation } = props;
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
     const productsList = useSelector((state) => state.products.availableProducts);
     const dispatch = useDispatch();
@@ -32,13 +33,14 @@ const ProductsOverview = (props) => {
         /* Multiple setState calls are batched together so,
         the following won't cause multiple re-render cycles */
         setError(null);
-        setIsLoading(true);
+        // Setting refreshing true/false for subsequent refresh, but not initial render
+        setIsRefreshing(true);
         try {
         await dispatch(productActions.fetchProducts());
         } catch (err) {
             setError(err.message);
         }
-        setIsLoading(false);
+        setIsRefreshing(false);
     }, [dispatch]);
 
     /* In stack naviagtion, moving back from one stack and then going back destroys and recreate
@@ -71,7 +73,9 @@ const ProductsOverview = (props) => {
 
     /* Second useEffect, fires as soon as component is loaded */
     useEffect(() => {
-        loadProducts();
+        // Setting loading true/false for initial render only
+        setIsLoading(true);
+        loadProducts().then(setIsLoading(false));
     }, [loadProducts]);
 
     const onSelectItemHandler = (id, title) => (
@@ -116,6 +120,11 @@ const ProductsOverview = (props) => {
     return (
         <View style={styles.screen}>
             <FlatList
+            // Pull to refresh functionality
+            // automatically provides spinner
+            onRefresh={loadProducts}
+            // setting this property mandatory with refresh
+            refreshing={isRefreshing}
             data={productsList}
             renderItem={(itemData) => (
                         <ProductCard

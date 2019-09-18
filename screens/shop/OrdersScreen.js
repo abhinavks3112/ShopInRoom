@@ -15,6 +15,7 @@ import BodyText from '../../components/BodyText';
 const OrdersScreen = (props) => {
     const { navigation } = props;
     const [isLoading, setisLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
     const dispatch = useDispatch();
 
@@ -23,18 +24,20 @@ const OrdersScreen = (props) => {
     const loadOrders = useCallback(async () => {
         try {
             setError(null);
-            setisLoading(true);
+            setIsRefreshing(true);
             console.log('Dispatching order fetch action');
             await dispatch(fetchOrders());
         } catch (err) {
             setError(err.message);
         }
-        setisLoading(false);
+        setIsRefreshing(false);
     }, [dispatch]);
 
     /* Load product on load */
     useEffect(() => {
+        setisLoading(true);
         loadOrders();
+        setisLoading(false);
     }, [loadOrders]);
 
      /* Attach a nav event listener and load product
@@ -69,6 +72,8 @@ const OrdersScreen = (props) => {
 
     return (
         <FlatList
+        onRefresh={loadOrders}
+        refreshing={isRefreshing}
         data={orderList}
         keyExtractor={(item) => item.id}
         renderItem={(itemData) => (
