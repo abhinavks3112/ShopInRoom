@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
- View, StyleSheet, Button, FlatList
+ View, StyleSheet, Button, FlatList, Alert
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,12 +10,15 @@ import TitleText from '../../components/TitleText';
 import BodyText from '../../components/BodyText';
 import CartItem from '../../components/CartItems';
 import Card from '../../components/Card';
+import Spinner from '../../components/Spinner';
 
 // actions
 import { removeFromCart } from '../../store/actions/cartAction';
 import { addOrder } from '../../store/actions/ordersAction';
 
 const CartScreen = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     const itemsInCart = useSelector((state) => {
         const transformedCartItems = [];
         // eslint-disable-next-line no-restricted-syntax
@@ -34,6 +37,26 @@ const CartScreen = () => {
 
     const dispatch = useDispatch();
     const totalAmount = useSelector((state) => state.carts.totalAmount);
+
+    // Display an alert if an error is encountered
+    useEffect(() => {
+        if (error) {
+            Alert.alert('Error', error, [{ text: 'Okay' }]);
+        }
+    }, [error]);
+
+    const sendOrderHandler = async () => {
+        try {
+        setError(null);
+        setIsLoading(true);
+        // Always put await when using async
+        // Note: if await not put, catch won't be able to catch error in try catch format
+        await dispatch(addOrder(itemsInCart, totalAmount));
+        } catch (err) {
+           setError(err.message);
+        }
+        setIsLoading(false);
+    };
 
     const renderItemList = () => {
         if (itemsInCart.length !== 0) {
@@ -59,21 +82,32 @@ const CartScreen = () => {
     return (
         <View style={styles.screen}>
             <Card style={styles.summary}>
-                <BodyText style={styles.summaryText}>
-                    Total:
-                    {' '}
-                    <TitleText style={styles.amount}>
-                    $
-                    {/* To handle negative number case scenario, rounding the number */}
-                    {Math.round(totalAmount.toFixed(2) * 100) / 100}
-                    </TitleText>
-                </BodyText>
-                <Button
-                title="Order Now"
-                onPress={() => dispatch(addOrder(itemsInCart, totalAmount))}
-                color={Colors.Accent}
-                disabled={itemsInCart.length === 0} // Disable button if no item added
-                />
+                <View>
+                    <BodyText style={styles.summaryText}>
+                        Total:
+                        {' '}
+                        <TitleText style={styles.amount}>
+                        $
+                        {/* To handle negative number case scenario, rounding the number */}
+                        {Math.round(totalAmount.toFixed(2) * 100) / 100}
+                        </TitleText>
+                    </BodyText>
+                </View>
+                {isLoading
+                ? (
+                    <Spinner
+                    spinnerSize="small"
+                    spinnerColor={Colors.Accent}
+                    />
+                )
+                : (
+                    <Button
+                    title="Order Now"
+                    onPress={sendOrderHandler}
+                    color={Colors.Accent}
+                    disabled={itemsInCart.length === 0}
+                    />
+                )}
             </Card>
             {renderItemList()}
         </View>
