@@ -2,12 +2,9 @@ import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
-import { useScreens } from 'react-native-screens';
 
 import ShopNaviagtor from './navigation/ShopNavigator';
 import configureStore from './store/configureStore';
-
-useScreens(true);
 
 const store = configureStore();
 
