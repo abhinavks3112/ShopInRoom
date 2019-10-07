@@ -1,8 +1,9 @@
 import { ADD_ORDER, SET_ORDERS } from './types';
 import Order from '../../models/order';
 
-export const fetchOrders = () => async (dispatch) => {
-    const response = await fetch('https://shopinroom-65e62.firebaseio.com/orders/u1.json');
+export const fetchOrders = () => async (dispatch, getState) => {
+    const { userId } = getState().auth;
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/orders/${userId}.json`);
     if (!response.ok) {
         throw new Error('Something went wrong!! Please Try Again!!!');
     }
@@ -26,9 +27,10 @@ export const fetchOrders = () => async (dispatch) => {
 // eslint-disable-next-line import/prefer-default-export
 export const addOrder = (cartItems, totalAmount) => async (dispatch, getState) => {
      // Thunk provides access to app state as second argument
-     const { token } = getState().auth;
+    const { token } = getState().auth;
+    const { userId } = getState().auth;
     const date = new Date().toISOString();
-    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/orders/u1.json?auth=${token}`, {
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/orders/${userId}.json?auth=${token}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

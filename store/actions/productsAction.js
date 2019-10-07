@@ -6,11 +6,12 @@ import {
  } from './types';
  import Product from '../../models/product';
 
-export const fetchProducts = () => async (dispatch) => {
+export const fetchProducts = () => async (dispatch, getState) => {
     /* When using async await we use try catch block instead of .then().catch() format */
+    // eslint-disable-next-line no-useless-catch
     try {
         const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json');
-
+        const { userId } = getState().auth;
         /* If response is not in 100-200 range then,
         we can raise a new error(forward by throwing it) indicating the same, this
         will be caught in catch block */
@@ -23,7 +24,7 @@ export const fetchProducts = () => async (dispatch) => {
         for (const key in responseData) {
             loadedProducts.push(new Product(
             key,
-            'u1',
+            responseData[key].ownerId,
             responseData[key].title,
             responseData[key].imageUrl,
             responseData[key].description,
@@ -33,7 +34,8 @@ export const fetchProducts = () => async (dispatch) => {
 
         dispatch({
             type: SET_PRODUCTS,
-            products: loadedProducts
+            products: loadedProducts,
+            userProducts: loadedProducts.filter((product) => product.ownerId === userId)
         });
     } catch (err) {
         // send to custom analytic server
@@ -77,6 +79,7 @@ export const createProduct = (
 ) => async (dispatch, getState) => {
      // Thunk provides access to app state as second argument
      const { token } = getState().auth;
+     const { userId } = getState().auth;
     /* Using async await syntax for readability.
     In background, it translate to fetch().then() syntax */
     // Any async code here
@@ -91,7 +94,8 @@ export const createProduct = (
             title,
             imageUrl,
             description,
-            price
+            price,
+            ownerId: userId
         })
     });
 
@@ -105,7 +109,8 @@ export const createProduct = (
             title,
             imageUrl,
             description,
-            price
+            price,
+            ownerId: userId
         }
     });
 };
