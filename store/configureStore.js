@@ -5,12 +5,14 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import productsReducer from './reducers/productsReducer';
 import cartReducer from './reducers/cartReducer';
 import ordersReducer from './reducers/ordersReducer';
+import authReducer from './reducers/authReducer';
 
 const configureStore = (preLoadedState) => {
     const rootReducer = combineReducers({
         products: productsReducer,
         carts: cartReducer,
-        orders: ordersReducer
+        orders: ordersReducer,
+        auth: authReducer
     });
 
     const middlewareEnchancer = applyMiddleware(ReduxThunk);
