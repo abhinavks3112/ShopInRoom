@@ -45,8 +45,10 @@ export const fetchProducts = () => async (dispatch) => {
     }
 };
 
-export const deleteProduct = (productId) => async (dispatch) => {
-    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${productId}.json`, {
+export const deleteProduct = (productId) => async (dispatch, getState) => {
+     // Thunk provides access to app state as second argument
+    const { token } = getState().auth;
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${productId}.json?auth=${token}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -72,11 +74,13 @@ export const createProduct = (
  imageUrl,
  description,
  price
-) => async (dispatch) => {
+) => async (dispatch, getState) => {
+     // Thunk provides access to app state as second argument
+     const { token } = getState().auth;
     /* Using async await syntax for readability.
     In background, it translate to fetch().then() syntax */
     // Any async code here
-    const response = await fetch('https://shopinroom-65e62.firebaseio.com/products.json', {
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products.json?auth=${token}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -111,8 +115,10 @@ export const updateProduct = (
     title,
     imageUrl,
     description
-   ) => async (dispatch) => {
-    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${id}.json`, {
+   ) => async (dispatch, getState) => {
+    // Thunk provides access to app state as second argument
+    const { token } = getState().auth;
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/products/${id}.json?auth=${token}`, {
         /* PATCH Http method does partial updates in the place where we tell it,
         whereas PUT method replaces the original version entirely */
         method: 'PATCH',

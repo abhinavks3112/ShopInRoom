@@ -24,9 +24,11 @@ export const fetchOrders = () => async (dispatch) => {
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export const addOrder = (cartItems, totalAmount) => async (dispatch) => {
+export const addOrder = (cartItems, totalAmount) => async (dispatch, getState) => {
+     // Thunk provides access to app state as second argument
+     const { token } = getState().auth;
     const date = new Date().toISOString();
-    const response = await fetch('https://shopinroom-65e62.firebaseio.com/orders/u1.json', {
+    const response = await fetch(`https://shopinroom-65e62.firebaseio.com/orders/u1.json?auth=${token}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
