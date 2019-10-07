@@ -12,6 +12,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Colors from '../../constants/Colors';
 import ProductCard from '../../components/ProductCard';
 import CustomHeaderButton from '../../components/HeaderButton';
+import BodyText from '../../components/BodyText';
 
 import { deleteProduct } from '../../store/actions/productsAction';
 
@@ -42,6 +43,14 @@ const UserProductScreen = (props) => {
             }
         ]);
     };
+
+    if (userProducts.length === 0) {
+        return (
+            <View style={styles.screen}>
+                <BodyText>No products!! Add some products to start selling!!</BodyText>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.screen}>
