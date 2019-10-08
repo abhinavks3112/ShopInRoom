@@ -1,5 +1,8 @@
-import { SIGNUP, SIGNIN } from './types';
+import { AsyncStorage } from 'react-native';
+import { AUTHENTICATE } from './types';
 import ENV from '../../env';
+
+export const authenticate = (userId, token) => ({ type: AUTHENTICATE, userId, token });
 
 // eslint-disable-next-line import/prefer-default-export
 export const signUp = (email, password) => async (dispatch) => {
@@ -16,6 +19,7 @@ export const signUp = (email, password) => async (dispatch) => {
     });
 
     if (!response.ok) {
+        // json() is asynchronous and returns a Promise object that resolves to a JavaScript object.
         const errorResponse = await response.json();
         const errorId = errorResponse.error.message;
         let message = 'Error Signing In!!';
@@ -29,13 +33,9 @@ export const signUp = (email, password) => async (dispatch) => {
 
     const result = await response.json();
 
-    console.log(result);
-
-    dispatch({
-        type: SIGNUP,
-        token: result.idToken,
-        userId: result.localId
-    });
+    dispatch(authenticate(result.localId, result.idToken));
+    const expirationDate = new Date(new Date().getTime() + (parseInt(result.expiresIn) * 1000));
+    saveDataToStorage(result.idToken, result.localId, expirationDate);
 };
 
 export const signIn = (email, password) => async (dispatch) => {
@@ -67,11 +67,21 @@ export const signIn = (email, password) => async (dispatch) => {
 
     const result = await response.json();
 
-    console.log(result);
+    dispatch(authenticate(result.localId, result.idToken));
+    // Token expiration Date
+    // expiresIn is in string, and indicates seconds so converting it to milliseconds and also int
+    // converting milliseconds result back to Date
+    const expirationDate = new Date(new Date().getTime() + (parseInt(result.expiresIn) * 1000));
+    saveDataToStorage(result.idToken, result.localId, expirationDate);
+};
 
-    dispatch({
-        type: SIGNIN,
-        token: result.idToken,
-        userId: result.localId
-    });
+const saveDataToStorage = (token, userId, expirationDate) => {
+    AsyncStorage.setItem(
+        'userData',
+        JSON.stringify({
+            token,
+            userId,
+            expiryDate: expirationDate.toISOString()
+        })
+    );
 };

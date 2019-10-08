@@ -1,6 +1,5 @@
 // Auth actions
-export const SIGNUP = 'SIGNUP';
-export const SIGNIN = 'SIGNIN';
+export const AUTHENTICATE = 'AUTHENTICATE';
 
 // Cart Actions
 export const ADD_TO_CART = 'ADD_TO_CART';
