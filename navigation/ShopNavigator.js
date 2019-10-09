@@ -1,7 +1,9 @@
 import React from 'react';
+import { View, SafeAreaView, Button } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerNavigatorItems } from 'react-navigation-drawer';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import ProductsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
@@ -12,6 +14,8 @@ import UserProductsScreen from '../screens/user/UserProductsScreen';
 import EditProductsScreen from '../screens/user/EditProductsScreen';
 import AuthScreen from '../screens/user/AuthScreen';
 import StartupScreen from '../screens/StartupScreen';
+
+import { signOut } from '../store/actions/authAction';
 
 import Colors from '../constants/Colors';
 
@@ -79,6 +83,28 @@ const AdminNavigator = createStackNavigator({
     defaultNavigationOptions: defaultHeaderStyle
 });
 
+const CustomDrawerCompSignOut = (props) => {
+    const dispatch = useDispatch();
+
+    return (
+        <View style={{ flex: 1, paddingTop: 40 }}>
+            {/* forceInset controls padding to be applied */}
+            <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                <DrawerNavigatorItems {...props} />
+                <View style={{ alignItems: 'center', width: '100%' }}>
+                    <Button
+                    title="Sign Out"
+                    color={Colors.Primary}
+                    onPress={() => {
+                        dispatch(signOut());
+                    }}
+                    />
+                </View>
+            </SafeAreaView>
+        </View>
+    );
+};
+
 const ShopNavigator = createDrawerNavigator({
     Products: ProductsNaviagtor,
     Orders: OrdersNavigator,
@@ -86,7 +112,8 @@ const ShopNavigator = createDrawerNavigator({
 }, {
     contentOptions: {
         activeTintColor: Colors.Primary
-    }
+    },
+    contentComponent: CustomDrawerCompSignOut
 });
 
 const AuthNavigator = createStackNavigator({

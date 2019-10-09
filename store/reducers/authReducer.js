@@ -1,4 +1,4 @@
-import { AUTHENTICATE } from '../actions/types';
+import { AUTHENTICATE, SIGNOUT } from '../actions/types';
 
 const INITIAL_STATE = {
    token: null,
@@ -12,6 +12,9 @@ export default (state = INITIAL_STATE, action) => {
                 token: action.token,
                 userId: action.userId
             };
+        }
+        case SIGNOUT: {
+            return INITIAL_STATE;
         }
         /* case SIGNUP: {
             return {

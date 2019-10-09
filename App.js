@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 
-import ShopNaviagtor from './navigation/ShopNavigator';
+import NavigationContainer from './navigation/NavigationContainer';
 import configureStore from './store/configureStore';
 
 const store = configureStore();
@@ -30,7 +30,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <ShopNaviagtor />
+      <NavigationContainer />
     </Provider>
   );
 }
